@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="product_label_report">
+            <t t-call="report.html_container">
+                <t t-as="o" t-foreach="docs">
+                    <div class="header">
+                        <div class="row">
+                            <div class="col-xs-4" style="margin-top:15px;">
+                                <img style="width:auto;height:70px;" t-att-src="'data:image/png;base64,%s' % user.company_id.logo" t-if="user.company_id.logo"/>
+                            </div>
+                            <div class="col-xs-8 text-right" style="margin-top:10px;">
+                                <p>
+                                    <strong>
+                                        <span t-esc="user.company_id.name"/>
+                                    </strong>
+                                    <br/>
+                                    <span t-esc="user.company_id.street"/>
+                                    <br/>
+                                    <span t-esc="user.company_id.country_id.name"/>
+                                    <br/>
+                                    <span t-esc="user.company_id.website"/>
+                                    <br/>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row zero_min_height" style="margin-top:10px;">
+                            <div class="col-xs-12">
+                                <div style="border-bottom: 1px solid black;"/>
+                                <div style="border-bottom: 1px solid black;"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page">
+                        <center>
+                            <h2>
+                                <strong>PRODUCT DETAILS</strong>
+                            </h2>
+                        </center>
+                        <div class="row mt32 mb32" style="font-size:15px;">
+                            <div class="col-xs-12">
+                                <img style="width:auto;height:70px;" t-att-src="'data:image/png;base64,%s' % o.image" t-if="o.image"/>
+                            </div>
+                            <div class="col-xs-12">
+                                <p style="width:100%;">
+                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.barcode, 200, 50)"/>
+                                </p>
+                            </div>
+                            <div class="col-xs-12">
+                                <strong>Product Code: </strong>
+                                <span t-field="o.default_code"/>
+                            </div>
+                            <div class="col-xs-12">
+                                <strong>Product Name: </strong>
+                                <span t-field="o.name"/>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <strong>Sale Price: </strong>
+                                <span t-field="o.list_price"/>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table table-hover" style="width:100%;">
+                                    <tbody>
+                                        <tr class="info">
+                                            <th style="text-align:left;">Vendor Name</th>
+                                            <th style="text-align:right;">Price</th>
+                                        </tr>
+                                        <tr t-as="vendor_line" t-foreach="o.seller_ids">
+                                            <td style="text-align:left;">
+                                                <span t-field="vendor_line.name.name"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-field="vendor_line.price"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="text-align:right;"/>
+                                            <td style="text-align:right;font-size:20px;">
+                                                <strong>Average:
+                                                        <span t-esc="len(o.seller_ids) != 0 and sum([v_line.price for v_line in o.seller_ids]) / len(o.seller_ids) or 0.0"/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <p style="page-break-after:always;"/>
+                    </div>
+                </t>
+            </t>
+        </template>
+        <report file="product_report_demo.product_label_report" id="product_label_report_qweb" menu="0" model="product.template" name="product_report_demo.product_label_report" report_type="qweb-pdf" string="Product Report"/>
+    </data>
+</openerp>
